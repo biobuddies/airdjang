@@ -8,10 +8,11 @@ piptools-sync
 pre-commit
 twine
 
-# In theory, pip-compile should be able to source these from pyproject.toml
-apache-airflow
+# Run time
+apache-airflow==2.8.0 # Should match Dockerfile
 django
 django-extensions
 django-filter
 django-sql-explorer
 djangorestframework
+jupyterhub
