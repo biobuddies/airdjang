@@ -1,11 +1,19 @@
-# Build time
-black
-ipython
+# Pre-commit hooks
+codespell>=2.3  # For codespell inline ignore comment support
+git+https://github.com/AleksaC/hadolint-py.git
 mypy
-shellcheck-py
 pip-tools
 piptools-sync
 pre-commit
+ruff
+shellcheck-py
+shfmt-py
+uv
+validate-pyproject[all]
+yamllint
+
+# Development
+ipython
 twine
 
 # Run time
