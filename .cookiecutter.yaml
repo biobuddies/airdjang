@@ -1,0 +1,11 @@
+default_context:
+    description: Airflow and Django
+    languages: Node,Python
+    python_dependencies:
+        - apache-airflow
+        - django
+        - django-extensions
+        - django-filter
+        - django-sql-explorer
+        - djangorestframework
+        - gunicorn
