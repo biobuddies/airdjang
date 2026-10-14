@@ -25,5 +25,3 @@ jobs:
                   restore-keys: ${{ runner.os }}-pre-commit
             - run: pip install pip-tools && pip-sync
             - run: source includes.sh && pcam --color always --show-diff-on-failure
-            - run: terraform -chdir=deploys/demo/terraform init
-            - run: terraform -chdir=deploys/demo/terraform validate

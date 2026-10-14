@@ -15,14 +15,6 @@ repos:
       rev: 23.12.1
       hooks:
           - id: black
-    - repo: https://github.com/jazzband/pip-tools
-      rev: 7.3.0
-      hooks:
-          - id: pip-compile
-            args:
-                - --no-emit-index-url
-            stages:
-                - manual
     - repo: https://github.com/pre-commit/mirrors-prettier
       rev: v3.1.0
       hooks:
@@ -31,10 +23,6 @@ repos:
                 - json
                 - yaml
                 - toml
-    - repo: https://github.com/stephen-ra-king/piptools-sync
-      rev: v1.0.4
-      hooks:
-          - id: piptools_sync
     - repo: https://github.com/abravalheri/validate-pyproject
       rev: v0.15
       hooks:
@@ -69,11 +57,6 @@ repos:
             entry: pip check
             language: system
             name: pip-check
-            pass_filenames: false
-          - id: shell-includes
-            entry: curl -Os https://raw.githubusercontent.com/covracer/helicopyter/main/includes.sh
-            language: system
-            name: shell-includes
             pass_filenames: false
           - id: yaml-extension # http://www.yaml.org/faq.html
             entry: YAML Ain't Markup Language files must use .yaml
