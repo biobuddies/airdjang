@@ -1,0 +1,90 @@
+concurrency:
+    group: ${{ github.workflow }}-${{ github.event_name == 'push' && 'main' || github.ref }}
+    cancel-in-progress: ${{ github.event_name != 'push' }}
+
+defaults:
+    run:
+        shell: bash --noprofile --norc -o errexit -o nounset -o pipefail -o xtrace {0}
+
+name: act
+
+permissions:
+    contents: read
+
+jobs:
+    # Root jobs
+    check:
+        runs-on: ubuntu-latest
+        steps:
+            # Real hash is head_ref on pull_request, ref on push
+            - uses: actions/checkout@v7
+              with:
+                  fetch-depth: 0
+                  ref: ${{ github.head_ref || github.ref }}
+                  submodules: true
+            - uses: jdx/mise-action@v4
+              with:
+                  experimental: true
+            - run: mise set-environment
+            - run: mise pre-commit-all
+    tabularize:
+        runs-on: ubuntu-latest
+        steps:
+            # Real hash is head_ref on pull_request, ref on push
+            - uses: actions/checkout@v7
+              with:
+                  fetch-depth: 0
+                  ref: ${{ github.head_ref || github.ref }}
+                  submodules: true
+            - uses: jdx/mise-action@v4
+              with:
+                  experimental: true
+                  install: false
+            - run: mise tabularize
+    test:
+        runs-on: ubuntu-latest
+        steps:
+            # Real hash is head_ref on pull_request, ref on push
+            - uses: actions/checkout@v7
+              with:
+                  fetch-depth: 0
+                  ref: ${{ github.head_ref || github.ref }}
+                  submodules: true
+            - uses: jdx/mise-action@v4
+              with:
+                  experimental: true
+            - run: mise checkout
+            - run: mise test
+
+    # Leaf jobs
+    build-deploy:
+        needs: [check, test]
+        permissions:
+            contents: write
+        runs-on: ubuntu-latest
+        environment:
+            name: ${{ github.head_ref || github.ref_name }}
+        steps:
+            - uses: actions/checkout@v7
+              with:
+                  submodules: true
+            - uses: jdx/mise-action@v4
+              with:
+                  experimental: true
+            # TABR is the branch, so FQDN is the preview or production domain
+            - run: mise set-environment
+            - run: mise build
+            - run: mise deploy "${{ github.head_ref || github.ref_name }}"
+            - if: github.event_name == 'push'
+              run: |
+                  expected=$(git ls-remote --refs origin refs/heads/prod | cut -f 1)
+                  git push "--force-with-lease=refs/heads/prod:$expected" origin HEAD:prod
+
+on: # yamllint disable-line rule:truthy
+    pull_request:
+    push:
+        branches:
+            - main
+    workflow_dispatch:
+
+run-name: Acting on behalf of ${{ github.actor }}

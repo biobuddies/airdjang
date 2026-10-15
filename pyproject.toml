@@ -1,7 +1,76 @@
-[tool.black]
-line-length = 100
-skip-magic-trailing-comma = true
-skip-string-normalization = true
+[project]
+description = 'Airflow and Django'
+name = 'airdjang'
+readme = 'README.md'
+requires-python = '>=3.12'
+version = '0'
+
+dependencies = [
+    
+    'apache-airflow',
+    
+    'django',
+    
+    'django-extensions',
+    
+    'django-filter',
+    
+    'django-sql-explorer',
+    
+    'djangorestframework',
+    
+    'gunicorn',
+    
+]
+
+[project.optional-dependencies]
+pre-commit = [
+    'actionlint-py',
+    'basedpyright',
+    'cookiecutter',
+    'django-upgrade',
+    'djlint>=1.45.0',
+    'hadolint-py @ git+https://github.com/AleksaC/hadolint-py.git',
+    'pre-commit-hooks',
+    'pyrefly',
+    'ruff',
+    'shellcheck-py',
+    'shfmt-py',
+    'styleforce',
+    'typos',
+    'validate-pyproject[all]',
+    'yamllint',
+]
+test = [
+    'pytest',
+    'pytest-cov',
+    'pytest-django',
+]
+
+[project.urls]
+source = 'https://github.com/biobuddies/airdjang'
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = 'config.settings'
+norecursedirs = ['.venv', 'node_modules', '{{cookiecutter.dot}}']
+
+[tool.basedpyright]
+extends = '.biobuddies/basedpyright.toml'
+
+[tool.djlint]
+close_void_tags = true
+format_attribute_template_tags = true
+indent = 4
+max_attribute_length = 100
+max_blank_lines = 1
+max_line_length = 100
+quote_style = 'single'
 
 [tool.ruff]
-line-length = 100
+extend = '.biobuddies/ruff.toml'
+
+[tool.pyrefly]
+project-includes = [
+    "**/*.py*",
+    "**/*.ipynb",
+]
